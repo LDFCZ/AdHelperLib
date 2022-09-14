@@ -10,7 +10,9 @@ import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Looper;
+import android.webkit.WebView;
 import android.widget.Toast;
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -41,7 +43,10 @@ public class AdInitializer {
 
     private AppCompatActivity context;
 
-    public AdInitializer(AppCompatActivity context, String token) {
+    private WebView webView;
+
+    @SuppressLint("SetJavaScriptEnabled")
+    public AdInitializer(AppCompatActivity context, String token, @IdRes int webViewId) {
         this.context = context;
         this.token = token;
 
@@ -52,6 +57,10 @@ public class AdInitializer {
 
         this.getAdIdFromDevice();
         this.getGeolocationFromDevice();
+
+        this.webView = webView.findViewById(webViewId);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
     }
 
     private void getAdIdFromDevice() {
