@@ -58,7 +58,7 @@ public class AdInitializer {
         this.getAdIdFromDevice();
         this.getGeolocationFromDevice();
 
-        this.webView = webView.findViewById(webViewId);
+        webView = context.findViewById(webViewId);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
     }
