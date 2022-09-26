@@ -96,7 +96,7 @@ public class AdInitializer {
 
         executor.execute(() -> {
             //Background work here
-            turnOnGPS();
+            //turnOnGPS();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (ActivityCompat.checkSelfPermission(AdInitializer.this.context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     LocationServices.getFusedLocationProviderClient(AdInitializer.this.context).requestLocationUpdates(locationRequest, new LocationCallback() {
@@ -132,7 +132,7 @@ public class AdInitializer {
         });
     }
 
-    private void turnOnGPS() {
+    public void turnOnGPS() {
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
