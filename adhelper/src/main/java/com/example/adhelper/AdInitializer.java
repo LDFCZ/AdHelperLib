@@ -45,8 +45,11 @@ public class AdInitializer {
 
     private WebView webView;
 
+    private boolean isAdIdReady;
+    private boolean isGeolocationReady;
+
     @SuppressLint("SetJavaScriptEnabled")
-    public AdInitializer(AppCompatActivity context, String token, @IdRes int webViewId) {
+    public AdInitializer(AppCompatActivity context, String token, @IdRes int webViewId) throws InterruptedException {
         this.context = context;
         this.token = token;
 
@@ -60,6 +63,7 @@ public class AdInitializer {
 
         webView = context.findViewById(webViewId);
         webView.getSettings().setJavaScriptEnabled(true);
+        while (!isGeolocationReady && !isAdIdReady) wait();
         webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
     }
 
@@ -87,7 +91,8 @@ public class AdInitializer {
             final String id = adInfo.getId();
             final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
             AdInitializer.this.setAdId(id);
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + id);
+            isAdIdReady = true;
+            AdInitializer.this.notify();
         });
     }
 
@@ -122,13 +127,16 @@ public class AdInitializer {
                                 }
                                 String cityName = addresses.get(0).getLocality();
                                 AdInitializer.this.setGeolocation(cityName);
-                                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + cityName);
+                                isGeolocationReady = true;
+                                AdInitializer.this.notify();
                             }
                         }
                     }, Looper.getMainLooper());
 
                 }
             }
+            isGeolocationReady = true;
+            AdInitializer.this.notify();
         });
     }
 
@@ -147,7 +155,7 @@ public class AdInitializer {
 
                 try {
                     LocationSettingsResponse response = task.getResult(ApiException.class);
-                    Toast.makeText(AdInitializer.this.context, "GPS is already turned on", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(AdInitializer.this.context, "GPS is already turned on", Toast.LENGTH_SHORT).show();
 
                 } catch (ApiException e) {
 
