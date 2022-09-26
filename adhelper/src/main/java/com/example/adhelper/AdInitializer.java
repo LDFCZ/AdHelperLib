@@ -56,7 +56,7 @@ public class AdInitializer {
         locationRequest.setFastestInterval(2000);
 
         this.getAdIdFromDevice();
-        this.getGeolocationFromDevice();
+        //this.getGeolocationFromDevice();
 
         webView = context.findViewById(webViewId);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -91,7 +91,7 @@ public class AdInitializer {
         });
     }
 
-    private void getGeolocationFromDevice() {
+    public void getGeolocationFromDevice() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         executor.execute(() -> {
