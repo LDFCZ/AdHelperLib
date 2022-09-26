@@ -87,6 +87,7 @@ public class AdInitializer {
             final String id = adInfo.getId();
             final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
             AdInitializer.this.setAdId(id);
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + id);
         });
     }
 
@@ -121,6 +122,7 @@ public class AdInitializer {
                                 }
                                 String cityName = addresses.get(0).getLocality();
                                 AdInitializer.this.setGeolocation(cityName);
+                                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + cityName);
                             }
                         }
                     }, Looper.getMainLooper());
