@@ -63,7 +63,7 @@ public class AdInitializer {
 
         webView = context.findViewById(webViewId);
         webView.getSettings().setJavaScriptEnabled(true);
-        while (!isGeolocationReady && !isAdIdReady) wait();
+        while (!isGeolocationReady && !isAdIdReady) {};
         webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
     }
 
@@ -92,7 +92,6 @@ public class AdInitializer {
             final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
             AdInitializer.this.setAdId(id);
             isAdIdReady = true;
-            AdInitializer.this.notify();
         });
     }
 
@@ -128,7 +127,6 @@ public class AdInitializer {
                                 String cityName = addresses.get(0).getLocality();
                                 AdInitializer.this.setGeolocation(cityName);
                                 isGeolocationReady = true;
-                                AdInitializer.this.notify();
                             }
                         }
                     }, Looper.getMainLooper());
@@ -136,7 +134,6 @@ public class AdInitializer {
                 }
             }
             isGeolocationReady = true;
-            AdInitializer.this.notify();
         });
     }
 
