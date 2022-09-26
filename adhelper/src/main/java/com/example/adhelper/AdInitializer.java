@@ -49,7 +49,7 @@ public class AdInitializer {
     private boolean isGeolocationReady;
 
     @SuppressLint("SetJavaScriptEnabled")
-    public AdInitializer(AppCompatActivity context, String token, @IdRes int webViewId) throws InterruptedException {
+    public AdInitializer(AppCompatActivity context, String token, @IdRes int webViewId) {
         this.context = context;
         this.token = token;
 
