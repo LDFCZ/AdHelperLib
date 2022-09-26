@@ -45,8 +45,10 @@ public class AdInitializer {
 
     private WebView webView;
 
-    private boolean isAdIdReady;
-    private boolean isGeolocationReady;
+    private boolean isAdIdReady = false;
+    private boolean isGeolocationReady = false;
+
+    private ExecutorService webViewLoader = Executors.newSingleThreadExecutor();
 
     @SuppressLint("SetJavaScriptEnabled")
     public AdInitializer(AppCompatActivity context, String token, @IdRes int webViewId) {
@@ -63,8 +65,20 @@ public class AdInitializer {
 
         webView = context.findViewById(webViewId);
         webView.getSettings().setJavaScriptEnabled(true);
-        while (!isGeolocationReady && !isAdIdReady) {};
-        webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
+
+
+        webViewLoader.execute(() -> {
+            //Background work here
+            while (!isGeolocationReady || !isAdIdReady) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
+        });
+
     }
 
     private void getAdIdFromDevice() {
@@ -92,6 +106,7 @@ public class AdInitializer {
             final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
             AdInitializer.this.setAdId(id);
             isAdIdReady = true;
+            webViewLoader.notify();
         });
     }
 
@@ -127,6 +142,7 @@ public class AdInitializer {
                                 String cityName = addresses.get(0).getLocality();
                                 AdInitializer.this.setGeolocation(cityName);
                                 isGeolocationReady = true;
+                                webViewLoader.notify();
                             }
                         }
                     }, Looper.getMainLooper());
@@ -134,6 +150,7 @@ public class AdInitializer {
                 }
             }
             isGeolocationReady = true;
+            webViewLoader.notify();
         });
     }
 
