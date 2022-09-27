@@ -48,8 +48,6 @@ public class AdInitializer {
     private boolean isAdIdReady = false;
     private boolean isGeolocationReady = false;
 
-    private ExecutorService webViewLoader = Executors.newSingleThreadExecutor();
-
     @SuppressLint("SetJavaScriptEnabled")
     public AdInitializer(AppCompatActivity context, String token, @IdRes int webViewId) {
         this.context = context;
@@ -66,19 +64,7 @@ public class AdInitializer {
         webView = context.findViewById(webViewId);
         webView.getSettings().setJavaScriptEnabled(true);
 
-
-        webViewLoader.execute(() -> {
-            //Background work here
-            while (!isGeolocationReady || !isAdIdReady) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
-        });
-
+        webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
     }
 
     private void getAdIdFromDevice() {
@@ -106,7 +92,7 @@ public class AdInitializer {
             final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
             AdInitializer.this.setAdId(id);
             isAdIdReady = true;
-            webViewLoader.notify();
+            //webViewLoader.notify();
         });
     }
 
@@ -142,7 +128,7 @@ public class AdInitializer {
                                 String cityName = addresses.get(0).getLocality();
                                 AdInitializer.this.setGeolocation(cityName);
                                 isGeolocationReady = true;
-                                webViewLoader.notify();
+                                //webViewLoader.notify();
                             }
                         }
                     }, Looper.getMainLooper());
@@ -150,7 +136,7 @@ public class AdInitializer {
                 }
             }
             isGeolocationReady = true;
-            webViewLoader.notify();
+            //webViewLoader.notify();
         });
     }
 
