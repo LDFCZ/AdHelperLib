@@ -54,7 +54,7 @@ public class AdInitializer {
         this.token = token;
 
         locationRequest = LocationRequest.create();
-        locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(Priority.PRIORITY_LOW_POWER);
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(2000);
 
@@ -65,6 +65,7 @@ public class AdInitializer {
         webView.getSettings().setJavaScriptEnabled(true);
 
         webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
+        System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
     }
 
     private void getAdIdFromDevice() {
