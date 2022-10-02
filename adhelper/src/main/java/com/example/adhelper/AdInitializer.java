@@ -69,13 +69,9 @@ public class AdInitializer {
     }
 
     public void showAd() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-
-        executor.execute(() -> {
-            while (!isAdIdReady || !isGeolocationReady) {}
-            webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
-            System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
-        });
+        while (!isAdIdReady || !isGeolocationReady) {}
+        webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
+        System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
     }
 
     private void getAdIdFromDevice() {
