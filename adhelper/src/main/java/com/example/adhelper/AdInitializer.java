@@ -129,6 +129,7 @@ public class AdInitializer {
                                 String cityName = addresses.get(0).getLocality();
                                 AdInitializer.this.setGeolocation(cityName);
                                 isGeolocationReady = true;
+                                System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
                                 //webViewLoader.notify();
                             }
                         }
