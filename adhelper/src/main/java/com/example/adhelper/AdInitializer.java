@@ -64,8 +64,18 @@ public class AdInitializer {
         webView = context.findViewById(webViewId);
         webView.getSettings().setJavaScriptEnabled(true);
 
-        webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
-        System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
+        //webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
+        //System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
+    }
+
+    public void showAd() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        executor.execute(() -> {
+            while (!isAdIdReady || !isGeolocationReady) {}
+            webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
+            System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
+        });
     }
 
     private void getAdIdFromDevice() {
