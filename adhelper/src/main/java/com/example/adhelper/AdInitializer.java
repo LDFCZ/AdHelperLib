@@ -74,6 +74,8 @@ public class AdInitializer {
         System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
     }
 
+
+
     private void getAdIdFromDevice() {
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -143,7 +145,7 @@ public class AdInitializer {
 
                 }
             }
-            isGeolocationReady = true;
+            //isGeolocationReady = true;
             //webViewLoader.notify();
         });
     }
