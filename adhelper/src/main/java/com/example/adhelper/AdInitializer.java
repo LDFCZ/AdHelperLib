@@ -58,96 +58,76 @@ public class AdInitializer {
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(2000);
 
-        this.getAdIdFromDevice();
-        //this.getGeolocationFromDevice();
 
         webView = context.findViewById(webViewId);
         webView.getSettings().setJavaScriptEnabled(true);
 
-        //webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
-        //System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
     }
 
     public void showAd() {
-        while (!isAdIdReady || !isGeolocationReady) {}
         webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
         System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
     }
 
 
 
-    private void getAdIdFromDevice() {
+    public void getAdIdFromDevice() {
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        //Background work here
+        AdvertisingIdClient.Info adInfo = null;
+        try {
+            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(AdInitializer.this.context);
 
-        executor.execute(() -> {
-            //Background work here
-            AdvertisingIdClient.Info adInfo = null;
-            try {
-                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(AdInitializer.this.context);
+        } catch (IOException exception) {
+            // Unrecoverable error connecting to Google Play services (e.g.,
+            // the old version of the service doesn't support getting AdvertisingId).
 
-            } catch (IOException exception) {
-                // Unrecoverable error connecting to Google Play services (e.g.,
-                // the old version of the service doesn't support getting AdvertisingId).
+        } catch (GooglePlayServicesRepairableException exception) {
+            // Encountered a recoverable error connecting to Google Play services.
 
-            } catch (GooglePlayServicesRepairableException exception) {
-                // Encountered a recoverable error connecting to Google Play services.
-
-            } catch (GooglePlayServicesNotAvailableException exception) {
-                // Google Play services is not available entirely.
-            }
-            assert adInfo != null;
-            final String id = adInfo.getId();
-            final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
-            AdInitializer.this.setAdId(id);
-            isAdIdReady = true;
-            //webViewLoader.notify();
-        });
+        } catch (GooglePlayServicesNotAvailableException exception) {
+            // Google Play services is not available entirely.
+        }
+        assert adInfo != null;
+        final String id = adInfo.getId();
+        final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
+        AdInitializer.this.setAdId(id);
+        isAdIdReady = true;
     }
 
     public void getGeolocationFromDevice() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
+        turnOnGPS();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(AdInitializer.this.context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                LocationServices.getFusedLocationProviderClient(AdInitializer.this.context).requestLocationUpdates(locationRequest, new LocationCallback() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onLocationResult(@NonNull LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
 
-        executor.execute(() -> {
-            //Background work here
-            //turnOnGPS();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ActivityCompat.checkSelfPermission(AdInitializer.this.context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    LocationServices.getFusedLocationProviderClient(AdInitializer.this.context).requestLocationUpdates(locationRequest, new LocationCallback() {
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void onLocationResult(@NonNull LocationResult locationResult) {
-                            super.onLocationResult(locationResult);
+                        LocationServices.getFusedLocationProviderClient(AdInitializer.this.context)
+                                .removeLocationUpdates(this);
 
-                            LocationServices.getFusedLocationProviderClient(AdInitializer.this.context)
-                                    .removeLocationUpdates(this);
+                        if (locationResult.getLocations().size() > 0) {
 
-                            if (locationResult.getLocations().size() > 0) {
-
-                                int index = locationResult.getLocations().size() - 1;
-                                double latitude = locationResult.getLocations().get(index).getLatitude();
-                                double longitude = locationResult.getLocations().get(index).getLongitude();
-                                Geocoder geocoder = new Geocoder(AdInitializer.this.context, Locale.getDefault());
-                                List<Address> addresses = null;
-                                try {
-                                    addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                String cityName = addresses.get(0).getLocality();
-                                AdInitializer.this.setGeolocation(cityName);
-                                isGeolocationReady = true;
-                                System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
-                                //webViewLoader.notify();
+                            int index = locationResult.getLocations().size() - 1;
+                            double latitude = locationResult.getLocations().get(index).getLatitude();
+                            double longitude = locationResult.getLocations().get(index).getLongitude();
+                            Geocoder geocoder = new Geocoder(AdInitializer.this.context, Locale.getDefault());
+                            List<Address> addresses = null;
+                            try {
+                                addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
                             }
+                            String cityName = addresses.get(0).getLocality();
+                            AdInitializer.this.setGeolocation(cityName);
                         }
-                    }, Looper.getMainLooper());
+                    }
+                }, Looper.getMainLooper());
 
-                }
             }
-            //isGeolocationReady = true;
-            //webViewLoader.notify();
-        });
+        }
     }
 
     public void turnOnGPS() {
@@ -190,10 +170,10 @@ public class AdInitializer {
 
     }
 
-    private void setGeolocation(String geolocation) {
+    public void setGeolocation(String geolocation) {
         this.geolocation = geolocation;
     }
-    private void setAdId(String adId) {
+    public void setAdId(String adId) {
         this.adId = adId;
     }
 
