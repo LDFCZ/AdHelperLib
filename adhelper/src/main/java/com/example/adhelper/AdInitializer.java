@@ -2,16 +2,14 @@ package com.example.adhelper;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Looper;
 import android.webkit.WebView;
-import android.widget.Toast;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,8 +26,7 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 
 public class AdInitializer {
 
@@ -39,14 +36,11 @@ public class AdInitializer {
 
     private String geolocation;
 
-    private LocationRequest locationRequest;
+    private final LocationRequest locationRequest;
 
-    private AppCompatActivity context;
+    private final AppCompatActivity context;
 
-    private WebView webView;
-
-    private boolean isAdIdReady = false;
-    private boolean isGeolocationReady = false;
+    private final WebView webView;
 
     @SuppressLint("SetJavaScriptEnabled")
     public AdInitializer(AppCompatActivity context, String token, @IdRes int webViewId) {
@@ -65,8 +59,7 @@ public class AdInitializer {
     }
 
     public void showAd() {
-        webView.loadUrl("https://interactive-ads-api.herokuapp.com"); // add token geo and adid
-        System.out.println("!!!!!!!!!!!" + adId + "!!!!!!" + geolocation);
+        webView.loadUrl("https://interactive-ads-api.herokuapp.com?appToken=" + this.token + "&adId=" + this.adId + "&geolocation=" + this.geolocation);
     }
 
 
@@ -88,11 +81,10 @@ public class AdInitializer {
         } catch (GooglePlayServicesNotAvailableException exception) {
             // Google Play services is not available entirely.
         }
-        assert adInfo != null;
+        if (adInfo == null) return;
         final String id = adInfo.getId();
         final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
         AdInitializer.this.setAdId(id);
-        isAdIdReady = true;
     }
 
     public void getGeolocationFromDevice() {
@@ -168,6 +160,20 @@ public class AdInitializer {
             }
         });
 
+    }
+
+    public void savePreferences(SharedPreferences sharedPreferences){
+        //SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("AdHelperGeolocation", this.getGeolocation());
+        editor.putString("AdHelperAdId", this.getAdId());
+        editor.apply();
+    }
+
+    public void loadPreferences(SharedPreferences sharedPreferences){
+        //SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        this.geolocation = sharedPreferences.getString("AdHelperGeolocation", null);
+        this.adId = sharedPreferences.getString("AdHelperAdId", null);
     }
 
     public void setGeolocation(String geolocation) {
