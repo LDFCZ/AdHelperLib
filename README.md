@@ -110,3 +110,11 @@ public class AdHelper extends AppCompatActivity {
     }
 }
 ```
+----------------------
+Если вы сами определяете ```Advertising ID``` и/или геолокацию, а именно город пользователя, то методы их определения можно не вызывать и передать данные с помощью методов: 
+``` java
+ public void setGeolocation(String geolocation) 
+ 
+ public void setAdId(String adId) 
+```
+
