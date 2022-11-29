@@ -36,6 +36,8 @@ public class AdInitializer {
 
     private String geolocation;
 
+    private String startContext;
+
     private final LocationRequest locationRequest;
 
     private final AppCompatActivity context;
@@ -55,6 +57,8 @@ public class AdInitializer {
 
         webView = context.findViewById(webViewId);
         webView.getSettings().setJavaScriptEnabled(true);
+
+        startContext = context.getIntent().getStringExtra("StartContext");
 
     }
 
@@ -193,5 +197,13 @@ public class AdInitializer {
 
     public String getGeolocation() {
         return geolocation;
+    }
+
+    public String getStartContext() {
+        return startContext;
+    }
+
+    public void setStartContext(String startContext) {
+        this.startContext = startContext;
     }
 }
