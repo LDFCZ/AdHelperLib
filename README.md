@@ -117,4 +117,21 @@ public class AdHelper extends AppCompatActivity {
  
  public void setAdId(String adId) 
 ```
+----------------------
+Вы так же можете уточнить условия запуска. Это поможет подобрать наилучшую рекламу в тот и иной момент пользования приложением.
+Список возможных контекстов:
+``` java
 
+SHOP_REWARDED,
+IN_GAME_REWARDED,
+IN_GAME_SAVE_ME,
+LOOSE,
+RANDOM,
+AFTER_N_GAMES;
+```
+Они не являются обязательными, но указать их можно при создании ```AppCompatActivity```:
+``` java
+Intent intent = new Intent(MainActivity.this, AdHelper.class);
+intent.putExtra("StartContext", StartContext.RANDOM.getCode());
+startActivity(intent);
+```
