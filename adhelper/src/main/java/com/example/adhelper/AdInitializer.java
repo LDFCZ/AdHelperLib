@@ -63,7 +63,7 @@ public class AdInitializer {
     }
 
     public void showAd() {
-        webView.loadUrl("https://interactive-ads-api.herokuapp.com?appToken=" + this.token + "&adId=" + this.adId + "&geolocation=" + this.geolocation);
+        webView.loadUrl("http://37.192.52.216:8080/?appToken=" + this.token + "&uai=" + this.adId + "&geolocation=" + this.geolocation);
     }
 
 
