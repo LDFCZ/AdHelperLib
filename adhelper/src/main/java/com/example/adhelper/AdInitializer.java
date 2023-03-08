@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.Task;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 
 public class AdInitializer {
@@ -63,7 +64,7 @@ public class AdInitializer {
     }
 
     public void showAd() {
-        webView.loadUrl("http://37.192.52.216:8080/?appToken=" + this.token + "&uai=" + this.adId + "&geolocation=" + this.geolocation);
+        webView.loadUrl("http://37.192.52.216:8080/?token=DfmMBSzpO79P0JPE&mode=true&uai=" + this.adId);
     }
 
 
@@ -71,23 +72,24 @@ public class AdInitializer {
     public void getAdIdFromDevice() {
 
         //Background work here
-        AdvertisingIdClient.Info adInfo = null;
-        try {
-            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(AdInitializer.this.context);
+//        AdvertisingIdClient.Info adInfo = null;
+//        try {
+//            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(AdInitializer.this.context);
+//
+//        } catch (IOException exception) {
+//            // Unrecoverable error connecting to Google Play services (e.g.,
+//            // the old version of the service doesn't support getting AdvertisingId).
+//
+//        } catch (GooglePlayServicesRepairableException exception) {
+//            // Encountered a recoverable error connecting to Google Play services.
+//
+//        } catch (GooglePlayServicesNotAvailableException exception) {
+//            // Google Play services is not available entirely.
+//        }
+//        if (adInfo == null) return;
+        final String id = String.valueOf(UUID.randomUUID());//adInfo.getId();
+        //final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
 
-        } catch (IOException exception) {
-            // Unrecoverable error connecting to Google Play services (e.g.,
-            // the old version of the service doesn't support getting AdvertisingId).
-
-        } catch (GooglePlayServicesRepairableException exception) {
-            // Encountered a recoverable error connecting to Google Play services.
-
-        } catch (GooglePlayServicesNotAvailableException exception) {
-            // Google Play services is not available entirely.
-        }
-        if (adInfo == null) return;
-        final String id = adInfo.getId();
-        final boolean isLAT = adInfo.isLimitAdTrackingEnabled();
         AdInitializer.this.setAdId(id);
     }
 
