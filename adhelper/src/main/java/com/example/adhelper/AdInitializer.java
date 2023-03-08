@@ -64,7 +64,7 @@ public class AdInitializer {
     }
 
     public void showAd() {
-        webView.loadUrl("http://37.192.52.216:8080/?token=DfmMBSzpO79P0JPE&mode=true&uai=" + this.adId);
+        webView.loadUrl("http://37.192.52.216:8080/?token=DfmMBSzpO79P0JPE&mode=false&uai=" + this.adId);
     }
 
 
